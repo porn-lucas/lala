@@ -1,0 +1,16 @@
+{
+  "name": "bot-lpm-24jam",
+  "version": "1.0.0",
+  "description": "Telegram Auto Send Message",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "telegram": "^2.22.2",
+    "input": "^1.0.1"
+  },
+  "engines": {
+    "node": ">=16.x"
+  }
+}
