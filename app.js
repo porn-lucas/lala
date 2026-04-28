@@ -15,7 +15,7 @@ const accounts = [
     apiId: 36961621,
     apiHash: "424cdf2bb3fba897620de01094d53ef9",
     session: new StringSession("1BQANOTEuMTA4LjU2LjIwMAG7oXs6rFRcNj45wwZBvs/rrCT2JiOk/NfUTcQ3NC4nkuRZEZxZmwWZd296MG0JVuuf/q6gjxWjMvwc6dFLx79hkIHrK6zBbZsX0aAH/PQYTPggiGlkXMJVEOr+/GX9C7oXO1vgyffEKXqAb0Ob8kmt51Vdc+LILOaPTPQdGioZlqnG8dCAthKTaUfTizX+3/BxzV5a2IirsBrhdCvxFV3yrT2LOdRGs6EJ6KlO65e5tQsSC6fbm7f+9ifieKD8Bca5CB2m+Kn9ksqe1neUA2C4o1H0Ra6fzH4IIyZ1cQGgTBCBiHdH0uVKiUghFxC1KLiXJVvQ/4Hoq+gqXZbaY9D/sg=="),
-    groupUsernames: ["@lpm_seme_uke", "@LPM_DDK_BBG_MMK", "@LpmGeolna"],
+    groupUsernames: ["@lpm_seme_uke", "@LPM_DDK_BBG_MMK", "@lpm_ukeseme_pejuh"],
     targetMinutes: [0, 10, 20, 30, 40, 50],
   },
   {
@@ -31,7 +31,7 @@ const accounts = [
     apiId: 23002288,
     apiHash: "6cae1ac1f2da88f26929f05836aaf069",
     session: new StringSession("1BQANOTEuMTA4LjU2LjE5OQG7IRBDMkRO8ZyN92hz8yGmqfGM4kxTT17HzS5BztaGU+k+UBRtUMybRseEL4fsEamtRUnpyZHtwKMji9q95jdaICovdNIKd9cSdNPqMGv5lUwEIISj57Jlmz05/ZbtMNcEn3/C3QP+aJNedAO1G02n7Mmh/0TMFYdve+fDbUB+J9SmsiaHSEp15BARxdk62IMyZi1DLJUHu3LIqyqghc9vl25LySxecpGTotpe8YPe0+wTJasCrmwg4FQpFi+YYAXJM3UNXwljmd8LDDYWUMoQlfy7c0xzNEJATgSpX9i9f60PPTkxcQ/AwYAorUFipKQjjiRsCmG4dltdR+TjkaNqcg=="),
-    groupUsernames: ["@lpm_seme_uke", "@LPM_DDK_BBG_MMK"],
+    groupUsernames: ["@lpm_seme_uke", "@LPM_DDK_BBG_MMK", "@Lpmsemeukerpp"],
     targetMinutes: [7, 17, 27, 37, 47, 57],
   },
 ];
