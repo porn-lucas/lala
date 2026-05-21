@@ -26,14 +26,6 @@ const accounts = [
     groupUsernames: ["@lpm_seme_uke", "@LPM_DDK_BBG_MMK", "@BIO_RPP_30"],
     targetMinutes: [4, 14, 24, 34, 44, 54],
   },
-  {
-    name: "AKUN +62887437418956",
-    apiId: 23002288,
-    apiHash: "6cae1ac1f2da88f26929f05836aaf069",
-    session: new StringSession("1BQANOTEuMTA4LjU2LjE5OQG7IRBDMkRO8ZyN92hz8yGmqfGM4kxTT17HzS5BztaGU+k+UBRtUMybRseEL4fsEamtRUnpyZHtwKMji9q95jdaICovdNIKd9cSdNPqMGv5lUwEIISj57Jlmz05/ZbtMNcEn3/C3QP+aJNedAO1G02n7Mmh/0TMFYdve+fDbUB+J9SmsiaHSEp15BARxdk62IMyZi1DLJUHu3LIqyqghc9vl25LySxecpGTotpe8YPe0+wTJasCrmwg4FQpFi+YYAXJM3UNXwljmd8LDDYWUMoQlfy7c0xzNEJATgSpX9i9f60PPTkxcQ/AwYAorUFipKQjjiRsCmG4dltdR+TjkaNqcg=="),
-    groupUsernames: ["@lpm_seme_uke", "@LPM_DDK_BBG_MMK", "@Lpmsemeukerpp"],
-    targetMinutes: [7, 17, 27, 37, 47, 57],
-  },
 ];
 
 // ---------- PESAN ----------
