@@ -2,13 +2,11 @@ const { TelegramClient } = require("telegram");
 const { StringSession } = require("telegram/sessions");
 const http = require("http");
 
-// SERVER HTTP (Wajib ada supaya hosting cloud tidak mematikan bot)
 http.createServer((req, res) => {
   res.write("Bot Status: Active");
   res.end();
 }).listen(process.env.PORT || 3000);
 
-// ---------- KONFIGURASI AKUN ----------
 const accounts = [
   {
     name: "AKUN +6287856442412",
@@ -16,7 +14,8 @@ const accounts = [
     apiHash: "424cdf2bb3fba897620de01094d53ef9",
     session: new StringSession("1BQANOTEuMTA4LjU2LjIwMAG7oXs6rFRcNj45wwZBvs/rrCT2JiOk/NfUTcQ3NC4nkuRZEZxZmwWZd296MG0JVuuf/q6gjxWjMvwc6dFLx79hkIHrK6zBbZsX0aAH/PQYTPggiGlkXMJVEOr+/GX9C7oXO1vgyffEKXqAb0Ob8kmt51Vdc+LILOaPTPQdGioZlqnG8dCAthKTaUfTizX+3/BxzV5a2IirsBrhdCvxFV3yrT2LOdRGs6EJ6KlO65e5tQsSC6fbm7f+9ifieKD8Bca5CB2m+Kn9ksqe1neUA2C4o1H0Ra6fzH4IIyZ1cQGgTBCBiHdH0uVKiUghFxC1KLiXJVvQ/4Hoq+gqXZbaY9D/sg=="),
     groupUsernames: ["@lpm_seme_uke", "@LPM_DDK_BBG_MMK", "@lpmsemeukerpp"],
-    targetMinutes: [0, 10, 20, 30, 40, 50],
+    // Jam genap → [0,20,40], jam ganjil → [10,30,50]
+    getTargetMinutes: (hour) => hour % 2 === 0 ? [0, 20, 40] : [10, 30, 50],
   },
   {
     name: "AKUN +6283175551960",
@@ -24,33 +23,21 @@ const accounts = [
     apiHash: "0561b7417fd82f85b5fb9811244a27ba",
     session: new StringSession("1BQANOTEuMTA4LjU2LjIwMAG7hz+pdnZo1xIS9The2PjFG6OlH6z/t25TwZN/7OPLfR0CgnK4CoLIw2s4xWM5EbBbTL/+t2IJgN8AI240l0Ecy6+xSAJuyyVpt16XpU9YaZb99/MHeSuffxcSXNFeAGOcU1sCyA0LAVcONrswPhQP5nJQ3b1jWv+4xVcXMMZL52F5UQMNK/1iRM/7ubJRItEUbjAICMLoUe8FtSE51Sn5LeDgZ7Hz5sxrZR361lcQKuNYYTXYBYUW8dWTGDi1RjsSqjroViULTgae7Ql8AMackZRpFqc2b1w78NanZ/142zD0Asci0ZIfh+fnGvsxi8+cOo6a84MGDQKWQnOoYLTb0A=="),
     groupUsernames: ["@lpm_seme_uke", "@LPM_DDK_BBG_MMK", "@BIO_RPP_30"],
-    targetMinutes: [4, 14, 24, 34, 44, 54],
-  },
-  {
-    name: "AKUN +6285771582422",
-    apiId: 25922161,
-    apiHash: "1ac23eeec768f729c4e8fe81c9a29d80",
-    session: new StringSession("1BQANOTEuMTA4LjU2LjE4MwG7vgCWSs+ZrCoZXBY0by3opCQWl+bTN/d/AsjkF6CpLM4WgjVDmNFglj5zF6H9cTLVzym1MJNhCIyEXz3Nnex5u8CbC/l2DuSiN78DwpV/Tz/uCG57d20jrDVoKjOBhZHtEOguPmkGmub8ww4mhvENxedgh7ibPkecqih4OsBfhy5kMTNDIEGDK1JPZruZ0HT6RloF+0BcYP+pqlhPxttUJhOojOowErDWKKkioVdJY1W1aNPIfXHXESa6S4RYhNsdWBXc23KgDLxd/HCb48KJ09X634ZiAut/KWTf4svUozyGd/aJR6XOYJPxaJQYdcKvKLdfvyuja76+YmJGbdv8ig=="),
-    groupUsernames: ["@lpm_seme_uke"],
-    targetMinutes: [8, 18, 28, 38, 48, 58],
+    // Kebalikan akun 1: jam genap → [10,30,50], jam ganjil → [0,20,40]
+    getTargetMinutes: (hour) => hour % 2 === 0 ? [10, 30, 50] : [0, 20, 40],
   },
 ];
 
-// ---------- PESAN ----------
 const messageToSend = `
-ch b0k*p bxb https://t.me/+GDXb7qYaLytkNDA1
+ch video  bxb https://t.me/+GDXb7qYaLytkNDA1
+ch  video bxb https://t.me/+GDXb7qYaLytkNDA1
+ch video  bxb https://t.me/+GDXb7qYaLytkNDA1
+ch video  bxb https://t.me/+GDXb7qYaLytkNDA1
+ch video  bxb https://t.me/+GDXb7qYaLytkNDA1
+ch video  bxb https://t.me/+GDXb7qYaLytkNDA1
+ch video  bxb https://t.me/+GDXb7qYaLytkNDA1
 
-ch b0k*p bxb https://t.me/+GDXb7qYaLytkNDA1
-
-ch b0k*p bxb https://t.me/+GDXb7qYaLytkNDA1
-
-ch b0k*p bxb https://t.me/+GDXb7qYaLytkNDA1
-
-ch b0k*p bxb https://t.me/+GDXb7qYaLytkNDA1
-
-ch b0k*p bxb https://t.me/+GDXb7qYaLytkNDA1
-
-#seme #uke #area
+#seme #uke #area 
 `.trim();
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -62,7 +49,6 @@ async function sendMessage(account) {
     account.apiHash,
     { connectionRetries: 5, autoReconnect: true, timeout: 30000 }
   );
-
   try {
     console.log(`[${new Date().toLocaleTimeString()}] [CONNECTING] ${account.name}...`);
     await client.connect();
@@ -71,7 +57,7 @@ async function sendMessage(account) {
       try {
         await client.sendMessage(group, { message: messageToSend });
         console.log(`[SUCCESS] ${account.name} -> ${group}`);
-        await delay(3000 + Math.random() * 2000); 
+        await delay(3000 + Math.random() * 2000);
       } catch (err) {
         console.log(`[ERROR] ${account.name} gagal ke ${group}: ${err.message}`);
         if (err.message.includes("FLOOD_WAIT")) break;
@@ -89,11 +75,15 @@ function startApp() {
   let lastProcessedMinute = -1;
   setInterval(async () => {
     const now = new Date();
+    const currentHour = now.getHours();
     const currentMinute = now.getMinutes();
+
     if (currentMinute !== lastProcessedMinute) {
       lastProcessedMinute = currentMinute;
       for (const account of accounts) {
-        if (account.targetMinutes.includes(currentMinute)) {
+        // Hitung target menit berdasarkan jam saat ini
+        const targetMinutes = account.getTargetMinutes(currentHour);
+        if (targetMinutes.includes(currentMinute)) {
           sendMessage(account).catch(e => console.log("Internal error:", e));
         }
       }
