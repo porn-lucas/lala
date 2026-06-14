@@ -22,7 +22,7 @@ const accounts = [
     apiId: 25494748,
     apiHash: "0561b7417fd82f85b5fb9811244a27ba",
     session: new StringSession("1BQANOTEuMTA4LjU2LjIwMAG7hz+pdnZo1xIS9The2PjFG6OlH6z/t25TwZN/7OPLfR0CgnK4CoLIw2s4xWM5EbBbTL/+t2IJgN8AI240l0Ecy6+xSAJuyyVpt16XpU9YaZb99/MHeSuffxcSXNFeAGOcU1sCyA0LAVcONrswPhQP5nJQ3b1jWv+4xVcXMMZL52F5UQMNK/1iRM/7ubJRItEUbjAICMLoUe8FtSE51Sn5LeDgZ7Hz5sxrZR361lcQKuNYYTXYBYUW8dWTGDi1RjsSqjroViULTgae7Ql8AMackZRpFqc2b1w78NanZ/142zD0Asci0ZIfh+fnGvsxi8+cOo6a84MGDQKWQnOoYLTb0A=="),
-    groupUsernames: ["@lpm_seme_uke", "@BIO_RPP_30"],
+    groupUsernames: ["@LPMKARANG", "@BIO_RPP_30"],
     // Menit ganjil berakhiran 9
     getTargetMinutes: () => [9, 19, 29, 39, 49, 59],
   },
