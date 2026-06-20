@@ -2,6 +2,7 @@ const { TelegramClient } = require("telegram");
 const { StringSession } = require("telegram/sessions");
 const http = require("http");
 
+// Server sederhana agar bot bisa running terus-menerus di hosting (seperti Replit/Heroku)
 http.createServer((req, res) => {
   res.write("Bot Status: Active");
   res.end();
@@ -9,23 +10,26 @@ http.createServer((req, res) => {
 
 const accounts = [
   {
-    name: "AKUN +6287856442412",
+    name: "AKUN +6287856442412", // AKUN 1
     apiId: 36961621,
     apiHash: "424cdf2bb3fba897620de01094d53ef9",
     session: new StringSession("1BQANOTEuMTA4LjU2LjIwMAG7oXs6rFRcNj45wwZBvs/rrCT2JiOk/NfUTcQ3NC4nkuRZEZxZmwWZd296MG0JVuuf/q6gjxWjMvwc6dFLx79hkIHrK6zBbZsX0aAH/PQYTPggiGlkXMJVEOr+/GX9C7oXO1vgyffEKXqAb0Ob8kmt51Vdc+LILOaPTPQdGioZlqnG8dCAthKTaUfTizX+3/BxzV5a2IirsBrhdCvxFV3yrT2LOdRGs6EJ6KlO65e5tQsSC6fbm7f+9ifieKD8Bca5CB2m+Kn9ksqe1neUA2C4o1H0Ra6fzH4IIyZ1cQGgTBCBiHdH0uVKiUghFxC1KLiXJVvQ/4Hoq+gqXZbaY9D/sg=="),
-    groupUsernames: ["@lpm_seme_uke", "@LPM_SEME_UKE_RPW", "@lpmsemeukerpp"],
-    // Menit ganjil berakhiran 3
-    getTargetMinutes: () => [3, 13, 23, 33, 43, 53],
+    groupUsernames: ["@BIO_RPP_30", "@LPM_SEME_UKE_RPW", "@lpmsemeukerpp"],
   },
   {
-    name: "AKUN +6283175551960",
+    name: "AKUN +6283175551960", // AKUN 2
     apiId: 25494748,
     apiHash: "0561b7417fd82f85b5fb9811244a27ba",
     session: new StringSession("1BQANOTEuMTA4LjU2LjIwMAG7hz+pdnZo1xIS9The2PjFG6OlH6z/t25TwZN/7OPLfR0CgnK4CoLIw2s4xWM5EbBbTL/+t2IJgN8AI240l0Ecy6+xSAJuyyVpt16XpU9YaZb99/MHeSuffxcSXNFeAGOcU1sCyA0LAVcONrswPhQP5nJQ3b1jWv+4xVcXMMZL52F5UQMNK/1iRM/7ubJRItEUbjAICMLoUe8FtSE51Sn5LeDgZ7Hz5sxrZR361lcQKuNYYTXYBYUW8dWTGDi1RjsSqjroViULTgae7Ql8AMackZRpFqc2b1w78NanZ/142zD0Asci0ZIfh+fnGvsxi8+cOo6a84MGDQKWQnOoYLTb0A=="),
-    groupUsernames: ["@LPMKARANG", "@BIO_RPP_30"],
-    // Menit ganjil berakhiran 9
-    getTargetMinutes: () => [9, 19, 29, 39, 49, 59],
+    groupUsernames: ["@LPMKARANG", "@BIO_RPP_30", "@lpmsemeukerpp"],
   },
+  {
+    name: "AKUN 3 (GANTI NAMA)", // AKUN 3 - SILAKAN ISI DATANYA
+    apiId: 29077885, // <-- GANTI DENGAN API ID AKUN 3
+    apiHash: "8abae3cbda9be207308b22a01668e4e0", // <-- GANTI DENGAN API HASH AKUN 3
+    session: new StringSession("1BQANOTEuMTA4LjU2LjE4MwG7CUXi+SW4BTJrWgx2KRGf2Lf7qKkfZuIoUG+a1iNgYGjevQuQzM00CDwwRKB5LTUOGcAxGnA5l5i1Qfn6BSlQyjEvlJqFzxRZT/0BSTNggsq+jGhA4U+b3oI4hzH2GYiSgzK/nysOQ7WcI/MDTxVbVFECmb8WN9b4v18C0qi8Av4TSDSreBDHIZ/Hd8f4ObXfSEp+7ConRl/zoIP2Y6JmRUSzLmu5Wn0nbieKycVKo/PZ+7cmSeZj1KZgAdj06oJiqUpore8vxbwpKtcFYBjYuA/EqL+M4zJ4yqh8hxaK5K8Ds4OjMhIURLUbRfpoqzU7rOZCzDjFgW0O2mIq9CjFyA=="), // <-- GANTI DENGAN SESSION AKUN 3
+    groupUsernames: ["@LPMKARANG", "@BIO_RPP_30","@LPM_SEME_UKE_RPW"], // <-- GANTI DENGAN TARGET GRUP AKUN 3
+  }
 ];
 
 const messageToSend = `
@@ -63,7 +67,7 @@ async function sendMessage(account) {
         await delay(3000 + Math.random() * 2000);
       } catch (err) {
         console.log(`[ERROR] ${account.name} gagal ke ${group}: ${err.message}`);
-        if (err.message.includes("FLOOD_WAIT")) break;
+        if (err.message.includes("FLOOD_WAIT")) break; // Berhenti kirim jika kena limit Telegram
       }
     }
   } catch (err) {
@@ -73,20 +77,52 @@ async function sendMessage(account) {
   }
 }
 
+// Global target minutes
+const targetMinutes = [3, 6, 9, 13, 16, 19, 23, 26, 29, 33, 36, 39, 43, 46, 49, 53, 56, 59];
+
+// Logika pembagian giliran akun berdasarkan jam
+function getAccountIndex(minuteIndex, currentHour) {
+  // Rotasi dibagi dalam siklus 3 jam (0, 1, 2)
+  const cycle = currentHour % 3;
+  
+  // Index 0 = Akun 1 | Index 1 = Akun 2 | Index 2 = Akun 3
+  if (cycle === 0) { 
+    // Jam Ke-1: Akun 1, Akun 2, Akun 3
+    return minuteIndex % 3;
+  } else if (cycle === 1) { 
+    // Jam Ke-2: Akun 2, Akun 3, Akun 1
+    return (minuteIndex + 1) % 3;
+  } else { 
+    // Jam Ke-3: Akun 3, Akun 2, Akun 1 (Sesuai spesifikasi request)
+    const reversePattern = [2, 1, 0];
+    return reversePattern[minuteIndex % 3];
+  }
+}
+
 function startApp() {
-  console.log("--- BOT AUTO SEND RUNNING ---");
+  console.log("--- BOT AUTO SEND RUNNING DENGAN 3 AKUN (ROTASI PER JAM) ---");
   let lastProcessedMinute = -1;
+  
+  // Looping pengecekan setiap 10 detik
   setInterval(async () => {
     const now = new Date();
     const currentMinute = now.getMinutes();
+    const currentHour = now.getHours();
     
+    // Mencegah pesan dikirim berulang kali di menit yang sama
     if (currentMinute !== lastProcessedMinute) {
       lastProcessedMinute = currentMinute;
-      for (const account of accounts) {
-        const targetMinutes = account.getTargetMinutes();
-        if (targetMinutes.includes(currentMinute)) {
-          sendMessage(account).catch(e => console.log("Internal error:", e));
-        }
+      
+      const minuteIndex = targetMinutes.indexOf(currentMinute);
+      
+      // Mengeksekusi pesan jika menit saat ini terdaftar di targetMinutes
+      if (minuteIndex !== -1) {
+        // Menentukan akun mana yang jalan pada menit ini
+        const accountIndex = getAccountIndex(minuteIndex, currentHour);
+        const accountToRun = accounts[accountIndex];
+        
+        console.log(`\n[JADWAL TERPICU] Jam: ${currentHour}, Menit: ${currentMinute} | Giliran: ${accountToRun.name}`);
+        sendMessage(accountToRun).catch(e => console.log("Internal error:", e));
       }
     }
   }, 10000);
