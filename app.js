@@ -10,25 +10,25 @@ http.createServer((req, res) => {
 
 const accounts = [
  {
-    name: "AKUN +6283197439676", // AKUN 1
-    apiId: 30337008,
-    apiHash: "40507eaab253855a9cf48622cee368c7",
-    session: new StringSession("1BQANOTEuMTA4LjU2LjE4MwG7lt5mRxcs/kQuyGYwoVtwsNov3oMdcRqkQJawXgqk42MNhR/+xrpDAyNXHjn9pq+tgi73Vv4dNGZslVbBi0LnrHqw5CcRP/M/mE2c1FXO9PUGXPBwjZEzsCg/gr9n3B3+lhXoXimcLQMmFbppU+I4OlwTOvcagrEaEt0uLTC/zbnPVvOigZvKu9pLBuonhn64e0buCj5+mRICarwtVOd9UypBdlvKbLQ1tScM8K+fvHx77QvfEQrd7mEbDxpANjCw9kvf6XjZeAawf5XL30lf+hn4AMnVpCaTy3xp7vQN+d5+Kvo+scOBR4Bq/hOmTLkM31QcNTHkrFpuU+vD/wrynw=="),
-    groupUsernames: ["@LPM_SEME_UKE_RPW", "@lpmsemeukerpp"],
+    name: "AKUN +6287856442412", // AKUN 1
+    apiId: 36961621,
+    apiHash: "424cdf2bb3fba897620de01094d53ef9",
+    session: new StringSession("1BQANOTEuMTA4LjU2LjIwMAG7oXs6rFRcNj45wwZBvs/rrCT2JiOk/NfUTcQ3NC4nkuRZEZxZmwWZd296MG0JVuuf/q6gjxWjMvwc6dFLx79hkIHrK6zBbZsX0aAH/PQYTPggiGlkXMJVEOr+/GX9C7oXO1vgyffEKXqAb0Ob8kmt51Vdc+LILOaPTPQdGioZlqnG8dCAthKTaUfTizX+3/BxzV5a2IirsBrhdCvxFV3yrT2LOdRGs6EJ6KlO65e5tQsSC6fbm7f+9ifieKD8Bca5CB2m+Kn9ksqe1neUA2C4o1H0Ra6fzH4IIyZ1cQGgTBCBiHdH0uVKiUghFxC1KLiXJVvQ/4Hoq+gqXZbaY9D/sg=="),
+    groupUsernames: ["@BIO_RPP_30", "@LPM_SEME_UKE_RPW"],
   },
   {
-    name: "AKUN +6281995790983 ", // AKUN 2
-    apiId: 37406618,
-    apiHash: "aa22c42a8c05b156cf534953a11e522d",
-     session: new StringSession("1BQANOTEuMTA4LjU2LjE4MwG7teOCWQMyZeLxb9k3lLOk6IKzhajjZ3S0RKtEZolc/zuP5cyJtOyj/uKaED0dPofi4k4ubWpqg7KTbqUsIdHWJRggWi6CqCL6BnltWk+r9zCUPdAWIbmyfiKvlzaXsGbYAO2Z1bxkHKa/5KpfENT+mOkM9KoDZONuTVRPcIzTM0a9a4BadlX+ai1jBPNptwmn2Bi07TmgXeMCSM+CZ3vE1as1VcwJ+Ey3A64ToDBGYOjbTMEiZZMaa+eWvs8VndLcatVlpj4qNUkNO9rBjQLDMfXmFdZ9cr75AK8mzHltuF7qBdDF5b7FqtDHlzLLKPAiL+IusRwBuv80zqV+WDiHYw=="),
+    name: "AKUN +6283175551960", // AKUN 2
+    apiId: 25494748,
+    apiHash: "0561b7417fd82f85b5fb9811244a27ba",
+    session: new StringSession("1BQANOTEuMTA4LjU2LjIwMAG7hz+pdnZo1xIS9The2PjFG6OlH6z/t25TwZN/7OPLfR0CgnK4CoLIw2s4xWM5EbBbTL/+t2IJgN8AI240l0Ecy6+xSAJuyyVpt16XpU9YaZb99/MHeSuffxcSXNFeAGOcU1sCyA0LAVcONrswPhQP5nJQ3b1jWv+4xVcXMMZL52F5UQMNK/1iRM/7ubJRItEUbjAICMLoUe8FtSE51Sn5LeDgZ7Hz5sxrZR361lcQKuNYYTXYBYUW8dWTGDi1RjsSqjroViULTgae7Ql8AMackZRpFqc2b1w78NanZ/142zD0Asci0ZIfh+fnGvsxi8+cOo6a84MGDQKWQnOoYLTb0A=="),
     groupUsernames: ["@BIO_RPP_30", "@lpmsemeukerpp"],
   },
   {
-    name: "AKUN 3 6281995790986  (GANTI NAMA)", // AKUN 3 - SILAKAN ISI DATANYA
-    apiId: 37190691, // <-- GANTI DENGAN API ID AKUN 3
-    apiHash: "cb55f060decd81e5ccc56b83e87d2cb4", 
-     session: new StringSession("1BQANOTEuMTA4LjU2LjE4MwG7sfO90qYSgDaH1p8Recd+v05zrkrf25YwT8rbIj4X6QM8BdK66gtANHnUx9sRp19AUeLa+Q2Rx1bg6q9chRLQVNpOPjnXyKjoCKVur2m1MCobYaZbW2+xDYAgOdXozc+ufzL0/FqnTIwgBnNWGefOpkZejpyTJj/yeH7Txki4YKse3qTzHNkBtFgjt/vKWWWzbHd21ix4pHTrpG2t1OgZK+W6bJJX0232oK85T1aqSr1QOmpufHwNORTiybZ6ZiVi8Fi40Y2/cTvNwB/dzCtSoxtW5/KSzHEGaOH6/CN2ODVIV3OUoH9arVwfq7VJsB8Csz+PJFtNdnQCtgCBhTcoGQ=="),
-    groupUsernames: ["@LPM_SEME_UKE_RPW", "@BIO_RPP_30"], // <-- GANTI DENGAN TARGET GRUP AKUN 3
+    name: "AKUN 3 (GANTI NAMA)", // AKUN 3 - SILAKAN ISI DATANYA
+    apiId: 33262151, // <-- GANTI DENGAN API ID AKUN 3
+    apiHash: "8874860f8cae4c88d20fa6898918937b", // <-- GANTI DENGAN API HASH AKUN 3
+    session: new StringSession("1BQANOTEuMTA4LjU2LjE4MwG7wwKZTDXuT9P4I2G957q5Y5Sak0aS09DlpZ2GsRnAHhKSDnkytA73CENYEQqt0E2FMKIHj1PvA0+M8PM8uz8KpIB1n4qewpDxdZBP5EFP3tX88g2Zgin2T7LSBY3IgKts+PuZHm8zeJ9nm62GpiSC808hWKEUATqd7/cCcEvdomYG4h66tlm/gi9C2HO5c3iEvmAwxf5lenGjYs8mo5dOIFLzbu0DP17G1A8RBw5VoEK56BaDVyvI2Ac1FRS2HU9USlvrYMQGWvSpZ+91asxkVHe3f9JO8UT1QXfVaMsUHKjchSXXqBK06BF02YPA2cD9QrFgwILQgG4gFNtSZAz8EA=="), // <-- GANTI DENGAN SESSION AKUN 3
+    groupUsernames: ["@LPM_SEME_UKE_RPW", "@lpmsemeukerpp"], // <-- GANTI DENGAN TARGET GRUP AKUN 3
   }
 ];
 
