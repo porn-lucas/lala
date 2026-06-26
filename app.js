@@ -77,15 +77,9 @@ async function sendMessage(account) {
   }
 }
 
-// === LOGIKA BARU: TIMER SHIFTING PER JAM ===
-// Fungsi untuk mendapatkan target menit berdasarkan jam saat ini
-function getTargetMinutes(hour) {
-  // Misal Jam 1 (1 % 10 = 1) -> Menit 1, 11, 21, 31, 41, 51
-  // Misal Jam 2 (2 % 10 = 2) -> Menit 2, 12, 22, 32, 42, 52
-  // Misal Jam 10 (10 % 10 = 0) -> Menit 0, 10, 20, 30, 40, 50
-  const base = hour % 10;
-  return [base, base + 10, base + 20, base + 30, base + 40, base + 50];
-}
+// === LOGIKA BARU: TIMER MENIT TETAP ===
+// Menit 10 tidak ada di daftar ini sesuai permintaan Anda. Tambahkan ", 10" jika itu typo.
+const targetMinutes = [0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55];
 
 // === LOGIKA BARU: AKUN ACAK (RANDOM SHUFFLE) ===
 let accountQueue = [];
@@ -105,7 +99,7 @@ function getNextRandomAccountIndex() {
 }
 
 function startApp() {
-  console.log("--- BOT AUTO SEND RUNNING (MENIT BERGESER & AKUN ACAK) ---");
+  console.log("--- BOT AUTO SEND RUNNING (MENIT TETAP & AKUN ACAK) ---");
   let lastProcessedMinute = -1;
   
   // Looping pengecekan setiap 10 detik
@@ -116,9 +110,6 @@ function startApp() {
     
     // Mencegah pesan dikirim berulang kali di menit yang sama
     if (currentMinute !== lastProcessedMinute) {
-      
-      // Ambil array target menit di jam saat ini
-      const targetMinutes = getTargetMinutes(currentHour);
       
       // Mengeksekusi pesan jika menit saat ini ada di dalam targetMinutes
       if (targetMinutes.includes(currentMinute)) {
