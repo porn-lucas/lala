@@ -77,30 +77,35 @@ async function sendMessage(account) {
   }
 }
 
-// Global target minutes
-const targetMinutes = [3, 6, 9, 13, 16, 19, 23, 26, 29, 33, 36, 39, 43, 46, 49, 53, 56, 59];
+// === LOGIKA BARU: TIMER SHIFTING PER JAM ===
+// Fungsi untuk mendapatkan target menit berdasarkan jam saat ini
+function getTargetMinutes(hour) {
+  // Misal Jam 1 (1 % 10 = 1) -> Menit 1, 11, 21, 31, 41, 51
+  // Misal Jam 2 (2 % 10 = 2) -> Menit 2, 12, 22, 32, 42, 52
+  // Misal Jam 10 (10 % 10 = 0) -> Menit 0, 10, 20, 30, 40, 50
+  const base = hour % 10;
+  return [base, base + 10, base + 20, base + 30, base + 40, base + 50];
+}
 
-// Logika pembagian giliran akun berdasarkan jam
-function getAccountIndex(minuteIndex, currentHour) {
-  // Rotasi dibagi dalam siklus 3 jam (0, 1, 2)
-  const cycle = currentHour % 3;
-  
-  // Index 0 = Akun 1 | Index 1 = Akun 2 | Index 2 = Akun 3
-  if (cycle === 0) { 
-    // Jam Ke-1: Akun 1, Akun 2, Akun 3
-    return minuteIndex % 3;
-  } else if (cycle === 1) { 
-    // Jam Ke-2: Akun 2, Akun 3, Akun 1
-    return (minuteIndex + 1) % 3;
-  } else { 
-    // Jam Ke-3: Akun 3, Akun 2, Akun 1 (Sesuai spesifikasi request)
-    const reversePattern = [2, 1, 0];
-    return reversePattern[minuteIndex % 3];
+// === LOGIKA BARU: AKUN ACAK (RANDOM SHUFFLE) ===
+let accountQueue = [];
+
+function getNextRandomAccountIndex() {
+  // Jika antrean kosong, isi ulang dengan index [0, 1, 2] lalu acak (shuffle)
+  if (accountQueue.length === 0) {
+    accountQueue = [0, 1, 2];
+    for (let i = accountQueue.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      // Swap (tukar posisi)
+      [accountQueue[i], accountQueue[j]] = [accountQueue[j], accountQueue[i]];
+    }
   }
+  // Ambil (hapus dan return) elemen pertama dari antrean yang sudah diacak
+  return accountQueue.shift();
 }
 
 function startApp() {
-  console.log("--- BOT AUTO SEND RUNNING DENGAN 3 AKUN (ROTASI PER JAM) ---");
+  console.log("--- BOT AUTO SEND RUNNING (MENIT BERGESER & AKUN ACAK) ---");
   let lastProcessedMinute = -1;
   
   // Looping pengecekan setiap 10 detik
@@ -111,21 +116,23 @@ function startApp() {
     
     // Mencegah pesan dikirim berulang kali di menit yang sama
     if (currentMinute !== lastProcessedMinute) {
-      lastProcessedMinute = currentMinute;
       
-      const minuteIndex = targetMinutes.indexOf(currentMinute);
+      // Ambil array target menit di jam saat ini
+      const targetMinutes = getTargetMinutes(currentHour);
       
-      // Mengeksekusi pesan jika menit saat ini terdaftar di targetMinutes
-      if (minuteIndex !== -1) {
-        // Menentukan akun mana yang jalan pada menit ini
-        const accountIndex = getAccountIndex(minuteIndex, currentHour);
+      // Mengeksekusi pesan jika menit saat ini ada di dalam targetMinutes
+      if (targetMinutes.includes(currentMinute)) {
+        lastProcessedMinute = currentMinute;
+        
+        // Ambil akun acak dari antrean
+        const accountIndex = getNextRandomAccountIndex();
         const accountToRun = accounts[accountIndex];
         
-        console.log(`\n[JADWAL TERPICU] Jam: ${currentHour}, Menit: ${currentMinute} | Giliran: ${accountToRun.name}`);
+        console.log(`\n[JADWAL TERPICU] Jam: ${currentHour}, Menit: ${currentMinute} | Giliran Acak: ${accountToRun.name}`);
         sendMessage(accountToRun).catch(e => console.log("Internal error:", e));
       }
     }
-  }, 10000);
+  }, 10000); // Cek setiap 10 detik
 }
 
 startApp();
