@@ -33,18 +33,18 @@ const accounts = [
 ];
 
 const messageToSend = `
-ch video bk*₱ bxb https://t.me/+GDXb7qYaLytkNDA1
+ch video g4y bxb https://t.me/+GDXb7qYaLytkNDA1
 
-ch video bk*₱ bxb https://t.me/+GDXb7qYaLytkNDA1
+ch video g4y bxb https://t.me/+GDXb7qYaLytkNDA1
 
-ch video bk*₱ bxb https://t.me/+GDXb7qYaLytkNDA1
+ch video g4y bxb https://t.me/+GDXb7qYaLytkNDA1
 
-ch video bk*₱ bxb https://t.me/+GDXb7qYaLytkNDA1
+ch video g4y bxb https://t.me/+GDXb7qYaLytkNDA1
 
-ch video bk*₱ bxb https://t.me/+GDXb7qYaLytkNDA1
+ch video g4y bxb https://t.me/+GDXb7qYaLytkNDA1
 
-ch video bk*₱ bxb https://t.me/+GDXb7qYaLytkNDA1
-#seme #uke #area #mlm
+ch video g4y bxb https://t.me/+GDXb7qYaLytkNDA1
+#seme #uke #area #mlm 
 `.trim();
 
 const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
