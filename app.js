@@ -2,6 +2,7 @@ const { TelegramClient } = require("telegram");
 const { StringSession } = require("telegram/sessions");
 const http = require("http");
 
+// Server sederhana agar bot tetap hidup (misal jika dihosting di Replit/Heroku)
 http.createServer((req, res) => {
   res.write("Bot Status: Active");
   res.end();
@@ -14,13 +15,6 @@ const accounts = [
     apiHash: "424cdf2bb3fba897620de01094d53ef9",
     session: new StringSession("1BQANOTEuMTA4LjU2LjIwMAG7oXs6rFRcNj45wwZBvs/rrCT2JiOk/NfUTcQ3NC4nkuRZEZxZmwWZd296MG0JVuuf/q6gjxWjMvwc6dFLx79hkIHrK6zBbZsX0aAH/PQYTPggiGlkXMJVEOr+/GX9C7oXO1vgyffEKXqAb0Ob8kmt51Vdc+LILOaPTPQdGioZlqnG8dCAthKTaUfTizX+3/BxzV5a2IirsBrhdCvxFV3yrT2LOdRGs6EJ6KlO65e5tQsSC6fbm7f+9ifieKD8Bca5CB2m+Kn9ksqe1neUA2C4o1H0Ra6fzH4IIyZ1cQGgTBCBiHdH0uVKiUghFxC1KLiXJVvQ/4Hoq+gqXZbaY9D/sg=="),
     groupUsernames: ["@BIO_RPP_30", "@lpmsemeukerpp", "@LPM_SEME_UKE_RPW"],
-  },
-  {
-    name: "AKUN +6283175551960",
-    apiId: 25494748,
-    apiHash: "0561b7417fd82f85b5fb9811244a27ba",
-    session: new StringSession("1BQANOTEuMTA4LjU2LjIwMAG7hz+pdnZo1xIS9The2PjFG6OlH6z/t25TwZN/7OPLfR0CgnK4CoLIw2s4xWM5EbBbTL/+t2IJgN8AI240l0Ecy6+xSAJuyyVpt16XpU9YaZb99/MHeSuffxcSXNFeAGOcU1sCyA0LAVcONrswPhQP5nJQ3b1jWv+4xVcXMMZL52F5UQMNK/1iRM/7ubJRItEUbjAICMLoUe8FtSE51Sn5LeDgZ7Hz5sxrZR361lcQKuNYYTXYBYUW8dWTGDi1RjsSqjroViULTgae7Ql8AMackZRpFqc2b1w78NanZ/142zD0Asci0ZIfh+fnGvsxi8+cOo6a84MGDQKWQnOoYLTb0A=="),
-    groupUsernames: ["@BIO_RPP_30", "@lpmsemeukerpp", "@LPM_SEME_UKE_RPW"], // <-- diperbaiki: tambah [ di awal
   },
   {
     name: "AKUN 3 (GANTI NAMA)",
@@ -55,6 +49,7 @@ async function sendMessage(account) {
     account.apiHash,
     { connectionRetries: 5, autoReconnect: true, timeout: 30000 }
   );
+  
   try {
     console.log(`[${new Date().toLocaleTimeString()}] [CONNECTING] ${account.name}...`);
     await client.connect();
@@ -63,10 +58,10 @@ async function sendMessage(account) {
       try {
         await client.sendMessage(group, { message: messageToSend });
         console.log(`[SUCCESS] ${account.name} -> ${group}`);
-        await delay(3000 + Math.random() * 2000);
+        await delay(3000 + Math.random() * 2000); // Jeda aman antar grup
       } catch (err) {
         console.log(`[ERROR] ${account.name} gagal ke ${group}: ${err.message}`);
-        if (err.message.includes("FLOOD_WAIT")) break;
+        if (err.message.includes("FLOOD_WAIT")) break; // Hentikan jika kena flood limit
       }
     }
   } catch (err) {
@@ -76,47 +71,83 @@ async function sendMessage(account) {
   }
 }
 
-function getMsUntilNextTarget(targetMinutes) {
+function getNextRunTimeMs(accountIndex) {
   const now = new Date();
+  const currentHour = now.getHours();
   const currentMin = now.getMinutes();
-  const sortedTargets = [...targetMinutes].sort((a, b) => a - b);
-  let nextMin = sortedTargets.find((m) => m > currentMin);
-  let addHour = 0;
-  if (nextMin === undefined) {
-    nextMin = sortedTargets[0];
-    addHour = 1;
+
+  // Pola dasar: Akun 1 mulai (0, 20, 40), Akun 2 mulai (10, 30, 50)
+  const baseSchedules = [
+    [0, 20, 40],
+    [10, 30, 50]
+  ];
+  
+  const base = baseSchedules[accountIndex % baseSchedules.length];
+
+  // Fungsi untuk mendapatkan "shift" (pergeseran menit) berdasarkan jam
+  // Jam 1 -> shift 0, Jam 2 -> shift 1, dst (berulang maksimal per 10 menit agar aman dalam 1 jam)
+  const getShift = (hour) => {
+    let shift = (hour - 1) % 10;
+    if (shift < 0) shift += 10; // Menangani pergantian hari (jam 0)
+    return shift;
+  };
+
+  const currentShift = getShift(currentHour);
+  // Tambahkan pergeseran pada menit dasar
+  const currentTargets = base.map(m => m + currentShift);
+
+  // Cari apakah di jam SAAT INI masih ada jadwal yang belum terlewat
+  let targetMin = currentTargets.find(m => m > currentMin);
+  let targetHour = currentHour;
+  let addDay = 0;
+
+  // Jika semua jadwal di jam saat ini sudah terlewat, maju ke jam berikutnya
+  if (targetMin === undefined) {
+    targetHour = currentHour + 1;
+    const nextShift = getShift(targetHour % 24);
+    const nextTargets = base.map(m => m + nextShift);
+    targetMin = nextTargets[0]; // Ambil jadwal pertama di jam berikutnya
+    
+    if (targetHour >= 24) {
+      targetHour = targetHour % 24;
+      addDay = 1; // Lompat ke hari berikutnya
+    }
   }
+
+  // Hitung selisih waktu (milidetik) dari sekarang ke target jadwal
   const nextTime = new Date();
-  nextTime.setHours(now.getHours() + addHour);
-  nextTime.setMinutes(nextMin);
-  nextTime.setSeconds(2);
+  if (addDay > 0) {
+    nextTime.setDate(nextTime.getDate() + addDay);
+  }
+  nextTime.setHours(targetHour);
+  nextTime.setMinutes(targetMin);
+  nextTime.setSeconds(2); // Tambah jeda 2 detik agar trigger berjalan pasti di menit tersebut
   nextTime.setMilliseconds(0);
+
   return nextTime.getTime() - now.getTime();
 }
 
-async function runAccountLoop(account, targetMinutes) {
+async function runAccountLoop(account, accountIndex) {
   while (true) {
-    const waitMs = getMsUntilNextTarget(targetMinutes);
+    // Hitung berapa ms harus menunggu ke jadwal bergeser berikutnya
+    const waitMs = getNextRunTimeMs(accountIndex);
     const nextRun = new Date(Date.now() + waitMs).toLocaleTimeString();
+    
     console.log(`[JADWAL] ${account.name} dijadwalkan berjalan pada ${nextRun}`);
-    await delay(waitMs);
+    await delay(waitMs); // Tunggu sampai waktu target
+    
     console.log(`\n[TERPICU] Waktu: ${new Date().toLocaleTimeString()} | Giliran: ${account.name}`);
     await sendMessage(account);
   }
 }
 
-const schedules = [
-  [0, 20, 40],
-  [5, 25, 45],
-  [10, 30, 50]
-];
-
 function startApp() {
   console.log("--- BOT AUTO SEND RUNNING ---");
-  console.log("--- JADWAL: Menit Spesifik Setiap Jam ---");
+  console.log("--- JADWAL: Dinamis (Bergeser +1 Menit Setiap Pergantian Jam) ---");
+  
   accounts.forEach((account, index) => {
-    const schedule = schedules[index % schedules.length];
-    runAccountLoop(account, schedule).catch(e =>
+    // Mulai pengulangan jadwal berdasarkan index akun (0 untuk akun 1, 1 untuk akun 2)
+    runAccountLoop(account, index).catch(e =>
       console.log(`[FATAL ERROR] ${account.name}:`, e)
     );
   });
