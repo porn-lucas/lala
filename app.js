@@ -2,12 +2,23 @@ const { TelegramClient } = require("telegram");
 const { StringSession } = require("telegram/sessions");
 const http = require("http");
 
-// Server sederhana agar bot tetap hidup (misal jika dihosting di Replit/Heroku)
-http.createServer((req, res) => {
+// 1. Server HTTP sederhana dengan error listener agar tidak crash jika port terpakai
+const PORT = process.env.PORT || 3000;
+const server = http.createServer((req, res) => {
+  res.writeHead(200, { "Content-Type": "text/plain" });
   res.write("Bot Status: Active");
   res.end();
-}).listen(process.env.PORT || 3000);
+});
 
+server.listen(PORT, () => {
+  console.log(`[SERVER] Web server aktif di port ${PORT}`);
+});
+
+server.on("error", (err) => {
+  console.log(`[SERVER WARNING] ${err.message}`);
+});
+
+// 2. Konfigurasi Akun
 const accounts = [
   {
     name: "AKUN +6287856442412",
@@ -49,23 +60,30 @@ async function sendMessage(account) {
     account.apiHash,
     { connectionRetries: 5, autoReconnect: true, timeout: 30000 }
   );
-  
+
   try {
     console.log(`[${new Date().toLocaleTimeString()}] [CONNECTING] ${account.name}...`);
     await client.connect();
+
     for (const group of account.groupUsernames) {
       if (!group) continue;
       try {
-        await client.sendMessage(group, { message: messageToSend });
+        // PERBAIKAN: Ambil entitas grup terlebih dahulu agar GramJS mengenali target
+        const entity = await client.getEntity(group);
+        await client.sendMessage(entity, { message: messageToSend });
+
         console.log(`[SUCCESS] ${account.name} -> ${group}`);
         await delay(3000 + Math.random() * 2000); // Jeda aman antar grup
       } catch (err) {
         console.log(`[ERROR] ${account.name} gagal ke ${group}: ${err.message}`);
-        if (err.message.includes("FLOOD_WAIT")) break; // Hentikan jika kena flood limit
+        if (err.message.includes("FLOOD_WAIT")) {
+          console.log(`[LIMIT] ${account.name} terkena FLOOD_WAIT, melewatai grup tersisa.`);
+          break;
+        }
       }
     }
   } catch (err) {
-    console.log(`[FAILED] ${account.name}: ${err.message}`);
+    console.log(`[FAILED KONEKSI] ${account.name}: ${err.message}`);
   } finally {
     await client.disconnect();
   }
@@ -76,66 +94,62 @@ function getNextRunTimeMs(accountIndex) {
   const currentHour = now.getHours();
   const currentMin = now.getMinutes();
 
-  // Pola dasar: Akun 1 mulai (0, 20, 40), Akun 2 mulai (10, 30, 50)
   const baseSchedules = [
     [0, 20, 40],
     [10, 30, 50]
   ];
-  
+
   const base = baseSchedules[accountIndex % baseSchedules.length];
 
-  // Fungsi untuk mendapatkan "shift" (pergeseran menit) berdasarkan jam
-  // Jam 1 -> shift 0, Jam 2 -> shift 1, dst (berulang maksimal per 10 menit agar aman dalam 1 jam)
   const getShift = (hour) => {
     let shift = (hour - 1) % 10;
-    if (shift < 0) shift += 10; // Menangani pergantian hari (jam 0)
+    if (shift < 0) shift += 10;
     return shift;
   };
 
   const currentShift = getShift(currentHour);
-  // Tambahkan pergeseran pada menit dasar
-  const currentTargets = base.map(m => m + currentShift);
+  const currentTargets = base.map((m) => m + currentShift);
 
-  // Cari apakah di jam SAAT INI masih ada jadwal yang belum terlewat
-  let targetMin = currentTargets.find(m => m > currentMin);
+  let targetMin = currentTargets.find((m) => m > currentMin);
   let targetHour = currentHour;
   let addDay = 0;
 
-  // Jika semua jadwal di jam saat ini sudah terlewat, maju ke jam berikutnya
   if (targetMin === undefined) {
     targetHour = currentHour + 1;
     const nextShift = getShift(targetHour % 24);
-    const nextTargets = base.map(m => m + nextShift);
-    targetMin = nextTargets[0]; // Ambil jadwal pertama di jam berikutnya
-    
+    const nextTargets = base.map((m) => m + nextShift);
+    targetMin = nextTargets[0];
+
     if (targetHour >= 24) {
       targetHour = targetHour % 24;
-      addDay = 1; // Lompat ke hari berikutnya
+      addDay = 1;
     }
   }
 
-  // Hitung selisih waktu (milidetik) dari sekarang ke target jadwal
   const nextTime = new Date();
   if (addDay > 0) {
     nextTime.setDate(nextTime.getDate() + addDay);
   }
   nextTime.setHours(targetHour);
   nextTime.setMinutes(targetMin);
-  nextTime.setSeconds(2); // Tambah jeda 2 detik agar trigger berjalan pasti di menit tersebut
+  nextTime.setSeconds(2);
   nextTime.setMilliseconds(0);
 
-  return nextTime.getTime() - now.getTime();
+  const diffMs = nextTime.getTime() - now.getTime();
+  return diffMs > 0 ? diffMs : 1000;
 }
 
 async function runAccountLoop(account, accountIndex) {
   while (true) {
-    // Hitung berapa ms harus menunggu ke jadwal bergeser berikutnya
     const waitMs = getNextRunTimeMs(accountIndex);
     const nextRun = new Date(Date.now() + waitMs).toLocaleTimeString();
+    const waitMinutes = Math.round(waitMs / 1000 / 60);
+
+    console.log(`[JADWAL] ${account.name} akan berjalan jam ${nextRun} (tunggu ~${waitMinutes} menit)`);
     
-    console.log(`[JADWAL] ${account.name} dijadwalkan berjalan pada ${nextRun}`);
-    await delay(waitMs); // Tunggu sampai waktu target
-    
+    // Menunggu waktu eksekusi selanjutnya
+    await delay(waitMs);
+
     console.log(`\n[TERPICU] Waktu: ${new Date().toLocaleTimeString()} | Giliran: ${account.name}`);
     await sendMessage(account);
   }
@@ -144,10 +158,9 @@ async function runAccountLoop(account, accountIndex) {
 function startApp() {
   console.log("--- BOT AUTO SEND RUNNING ---");
   console.log("--- JADWAL: Dinamis (Bergeser +1 Menit Setiap Pergantian Jam) ---");
-  
+
   accounts.forEach((account, index) => {
-    // Mulai pengulangan jadwal berdasarkan index akun (0 untuk akun 1, 1 untuk akun 2)
-    runAccountLoop(account, index).catch(e =>
+    runAccountLoop(account, index).catch((e) =>
       console.log(`[FATAL ERROR] ${account.name}:`, e)
     );
   });
