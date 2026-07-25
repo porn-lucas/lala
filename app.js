@@ -2,7 +2,7 @@ const { TelegramClient } = require("telegram");
 const { StringSession } = require("telegram/sessions");
 const http = require("http");
 
-// 1. Server HTTP sederhana dengan error listener agar tidak crash jika port terpakai
+// 1. Server HTTP sederhana dengan error listener agar tidak crash jika port terpakai di Render
 const PORT = process.env.PORT || 3000;
 const server = http.createServer((req, res) => {
   res.writeHead(200, { "Content-Type": "text/plain" });
@@ -11,7 +11,7 @@ const server = http.createServer((req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`[SERVER] Web server aktif di port ${PORT}`);
+  console.log(`[SERVER] Web server aktif di port ${PORT} (Siap untuk Render)`);
 });
 
 server.on("error", (err) => {
@@ -68,7 +68,6 @@ async function sendMessage(account) {
     for (const group of account.groupUsernames) {
       if (!group) continue;
       try {
-        // PERBAIKAN: Ambil entitas grup terlebih dahulu agar GramJS mengenali target
         const entity = await client.getEntity(group);
         await client.sendMessage(entity, { message: messageToSend });
 
@@ -89,51 +88,44 @@ async function sendMessage(account) {
   }
 }
 
+// 3. Logika Penjadwalan Bergantian (0, 5, 10, 15, dst)
 function getNextRunTimeMs(accountIndex) {
   const now = new Date();
-  const currentHour = now.getHours();
   const currentMin = now.getMinutes();
 
+  // Akun 1 berjalan di menit: 0, 10, 20, 30, 40, 50
+  // Akun 2 berjalan di menit: 5, 15, 25, 35, 45, 55
   const baseSchedules = [
-    [0, 20, 40],
-    [10, 30, 50]
+    [0, 10, 20, 30, 40, 50],
+    [5, 15, 25, 35, 45, 55]
   ];
 
-  const base = baseSchedules[accountIndex % baseSchedules.length];
+  const targetMinutes = baseSchedules[accountIndex % baseSchedules.length];
 
-  const getShift = (hour) => {
-    let shift = (hour - 1) % 10;
-    if (shift < 0) shift += 10;
-    return shift;
-  };
-
-  const currentShift = getShift(currentHour);
-  const currentTargets = base.map((m) => m + currentShift);
-
-  let targetMin = currentTargets.find((m) => m > currentMin);
-  let targetHour = currentHour;
+  // Cari menit yang lebih besar dari menit saat ini
+  let targetMin = targetMinutes.find((m) => m > currentMin);
+  let targetHour = now.getHours();
   let addDay = 0;
 
+  // Jika tidak ada menit tersisa di jam ini, lompat ke jam berikutnya
   if (targetMin === undefined) {
-    targetHour = currentHour + 1;
-    const nextShift = getShift(targetHour % 24);
-    const nextTargets = base.map((m) => m + nextShift);
-    targetMin = nextTargets[0];
+    targetHour += 1;
+    targetMin = targetMinutes[0]; // Ambil menit pertama dari jadwal akun ini
 
+    // Jika melewati tengah malam
     if (targetHour >= 24) {
-      targetHour = targetHour % 24;
+      targetHour = 0;
       addDay = 1;
     }
   }
 
   const nextTime = new Date();
   if (addDay > 0) {
-    nextTime.setDate(nextTime.getDate() + addDay);
+    nextTime.setDate(nextTime.getDate() + 1);
   }
-  nextTime.setHours(targetHour);
-  nextTime.setMinutes(targetMin);
-  nextTime.setSeconds(2);
-  nextTime.setMilliseconds(0);
+  
+  // Set target waktu (Detik 2 agar tidak terjadi double-trigger saat pergantian detik)
+  nextTime.setHours(targetHour, targetMin, 2, 0);
 
   const diffMs = nextTime.getTime() - now.getTime();
   return diffMs > 0 ? diffMs : 1000;
@@ -157,7 +149,7 @@ async function runAccountLoop(account, accountIndex) {
 
 function startApp() {
   console.log("--- BOT AUTO SEND RUNNING ---");
-  console.log("--- JADWAL: Dinamis (Bergeser +1 Menit Setiap Pergantian Jam) ---");
+  console.log("--- JADWAL: Bergantian Setiap 5 Menit (Akun 1 = 0, 10... | Akun 2 = 5, 15...) ---");
 
   accounts.forEach((account, index) => {
     runAccountLoop(account, index).catch((e) =>
