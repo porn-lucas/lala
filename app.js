@@ -29,9 +29,9 @@ const accounts = [
   },
   {
     name: "AKUN 3 (GANTI NAMA)",
-    apiId: 33262151,
-    apiHash: "8874860f8cae4c88d20fa6898918937b",
-    session: new StringSession("1BQANOTEuMTA4LjU2LjE4MwG7wwKZTDXuT9P4I2G957q5Y5Sak0aS09DlpZ2GsRnAHhKSDnkytA73CENYEQqt0E2FMKIHj1PvA0+M8PM8uz8KpIB1n4qewpDxdZBP5EFP3tX88g2Zgin2T7LSBY3IgKts+PuZHm8zeJ9nm62GpiSC808hWKEUATqd7/cCcEvdomYG4h66tlm/gi9C2HO5c3iEvmAwxf5lenGjYs8mo5dOIFLzbu0DP17G1A8RBw5VoEK56BaDVyvI2Ac1FRS2HU9USlvrYMQGWvSpZ+91asxkVHe3f9JO8UT1QXfVaMsUHKjchSXXqBK06BF02YPA2cD9QrFgwILQgG4gFNtSZAz8EA=="),
+    apiId: 32752229,
+    apiHash: "c683eea0fcac6726c10e2d77285272d6",
+    session: new StringSession("1BQANOTEuMTA4LjU2LjE0MwG7Z4o6Iu7yoqdTV+8YB9EJ5leweLV6XccLGaC8GFs2S5SUS/xKuRBeXLgLAdOqCCXorze4d4D2kdHiFAOdWg0nNGdlyKW33HH4MMQaFM3IytSQLNyE+KjEWdj2qY7eTMeB53UL2K9jyrSzqmsrfrIfcxXpjug1Ld2w/ITy1gVzcORVNacNphRKKAkyorqLVN1bAOy+VciZhizktHrzb6U+0CCvwy2MoxyMVvsT/OvYrmcYeXr1UW4X1O/dwHsp69YBkMb5fiI0UEqRBwe/DEhFGBXkGBKNQlpcvwq0yno8zhJl150qvzz4qnrxxkjwyKo2KqoYsA62K8pKDHQbMsPPkA=="),
     groupUsernames: ["@BIO_RPP_30", "@lpmsemeukerpp", "@LPM_SEME_UKE_RPW"],
   }
 ];
